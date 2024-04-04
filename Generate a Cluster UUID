@@ -1,0 +1,25 @@
+ Generate a Cluster UUID
+
+ KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
+
+Format Log Directories
+
+ bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID -c config/kraft/server.properties
+
+Start the Kafka Server
+
+bin/kafka-server-start.sh config/kraft/server.properties
+
+
+TOPIC Creation:
+bin/kafka-topics.sh --create --topic Xenontask --partitions 4 --bootstrap-server localhost:9092
+
+Check Topic Desc:
+
+bin/kafka-topics.sh --describe --topic Xenontask --bootstrap-server localhost:9092
+
+Console Producer:
+bin/kafka-console-producer.sh --topic Xenontask --bootstrap-server localhost:9092
+
+Console Consumer:
+bin/kafka-console-consumer.sh --topic Xenontask --from-beginning --bootstrap-server localhost:9092

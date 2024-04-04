@@ -1,0 +1,8 @@
+Writing Data in KAFKA server using Pyspark
+
+   $ spark-submit --packages org.apache.spark:spark-streaming-kafka-0-10_2.12:3.0.1,org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.1 <path>
+
+Writing Data from KAFKA server to console using Pyspark
+
+   spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.4,org.apache.spark:spark-streaming-kafka_2.11:1.6.3,io.delta:delta-spark_2.12:3.1.0 --conf "spark.sql.extensions=io.delta.sql.DeltaSparkSessionExtension" --conf "spark.sql.catalog.spark_catalog=org.apache.spark.sql.delta.catalog.DeltaCatalog" /home/xs459-tejshr/kafka/Xenon_data_engineering/subcribers.py
+   
