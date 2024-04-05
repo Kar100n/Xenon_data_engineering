@@ -1,14 +1,9 @@
-from pyspark.sql.functions import broadcast
-from pyspark.sql.functions import col
-from pyspark.sql.functions import when, col
-from pyspark.sql.functions import explode
-from pyspark.sql.types import StructType, StructField, StringType 
-import pyspark
-from pyspark.sql import SparkSession 
-
+from pyspark.sql import *
+from pyspark.sql.functions import *
 from delta import *
-
-builder = pyspark.sql.SparkSession.builder.appName("Broadcast") \
+import pyspark
+from pyspark.sql.types import StructType, StructField, StringType 
+builder = pyspark.sql.SparkSession.builder.appName("SignalMapping") \
     .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
     .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
 
@@ -18,31 +13,16 @@ df_table_delta = (spark
     .read.format("delta")
     .load("/home/xs459-tejshr/kafka/Xenon_data_engineering/Delta_table/")
 )
-exploded_df = df_table_delta.select(explode("signals").alias("signal_name", "signal_value") 
+# Explode the 'signals' MapType column 
+
+exploded_df = df_table_delta.select( 
+
+    hour("signal_ts").alias("hour"), 
+
+    explode("signals").alias("signal_name", "signal_value") 
 
 ) 
-
-# Filter or identify ‘LV ActivePower (kW)’ rows and apply conditional logic 
-LV_ActivePower_df = exploded_df.filter(col("signal_name") == "LV_ActivePower")
-Generation_indicator_df = LV_ActivePower_df.withColumn("generation_indicator",
-
-    when( 
-
-        (col("signal_name") == "LV_ActivePower") & (col("signal_value").cast("float") < 200), "Low")
-        .when( 
-
-        (col("signal_name") == "LV_ActivePower") & (col("signal_value").cast("float") >= 200) & (col("signal_value").cast("float") < 600), "Medium"
-    ).when( 
-
-        (col("signal_name") == "LV_ActivePower") & (col("signal_value").cast("float") >= 600) & (col("signal_value").cast("float") < 1000), "High"
-
-    ).when( 
-
-        (col("signal_name") == "LV_ActivePower") & (col("signal_value").cast("float") >= 1000), "Exceptional"
-    )
-)
-
-Schema = StructType([ 
+schema = StructType([ 
 
     StructField("sig_name", StringType(), True), 
 
@@ -50,11 +30,7 @@ Schema = StructType([
 
 ]) 
 
- 
-
-# Define the data according to your JSON structure 
-
-Data = [ 
+data = [ 
 
     {"sig_name": "LV ActivePower (kW)", "sig_mapping_name": "active_power_average"}, 
 
@@ -66,23 +42,32 @@ Data = [
 
 ] 
 
+mapping_df = spark.createDataFrame(data, schema) 
+
+from pyspark.sql.functions import broadcast 
+
  
 
-# Create the DataFrame 
-Spark = SparkSession.builder.appName("SignalMapping").getOrCreate()
-Mapping_df = Spark.createDataFrame(Data, Schema) 
+# Perform the broadcast join 
 
-df_joined = Generation_indicator_df.join(broadcast(Mapping_df),
-                                              Generation_indicator_df["signal_name"] == Mapping_df["sig_name"],
-                                              #Generation_indicator_df["Wind Speed (m/s"] == Mapping_df["sig_name"],
-                                              #Generation_indicator_df["Theoretical_Power_Curve (KWh)"] == Mapping_df["sig_name"],
-                                             # Generation_indicator_df["Wind Direction (°)"] == Mapping_df["sig_name"],
-                                              "left")
+joined_df = exploded_df.join(broadcast(mapping_df), exploded_df.signal_name == mapping_df.sig_name, "left_outer") 
 
-# Assuming you want to replace the signal names for all relevant columns, you would iterate over each mapping
-# This example only shows the mechanism for one signal; you'd replicate this logic as needed
+ 
 
-# For demonstration purposes, let's select a couple of columns to illustrate the transformation
-df_final = df_joined.withColumnRenamed("sig_mapping_name", "new_signal_name")
+# Optionally, select the columns of interest and/or rename as necessary 
 
-df_final.select("signal_value", "new_signal_name").show()
+result_df = joined_df.select( 
+
+    "hour", 
+
+    "signal_name", 
+
+    "signal_value", 
+
+    "sig_mapping_name"  # This holds the descriptive name for the signal 
+
+) 
+
+ 
+
+result_df.show() 
