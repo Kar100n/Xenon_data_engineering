@@ -49,6 +49,5 @@ writing_df = exploded_df.writeStream \
     .format("console") \
     .option("checkpointLocation","checkpoint_dir") \
     .outputMode("Update") \
-    .start()
-    
+    .start()   
 writing_df.awaitTermination()

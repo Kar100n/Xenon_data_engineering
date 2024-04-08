@@ -17,7 +17,7 @@ exploded_df = df_table_delta.select(explode("signals").alias("signal_name", "sig
 
 ) 
 
-# Filter or identify ‘LV ActivePower (kW)’ rows and apply conditional logic 
+# Filtering ‘LV ActivePower (kW)’ rows and apply conditional logic 
 LV_ActivePower_df = exploded_df.filter(col("signal_name") == "LV_ActivePower")
 Generation_indicator_df = LV_ActivePower_df.withColumn("generation_indicator",
 
