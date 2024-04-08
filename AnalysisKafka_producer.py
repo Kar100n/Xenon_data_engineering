@@ -1,7 +1,6 @@
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import unix_timestamp, from_unixtime, current_date, current_timestamp, struct, col
-from pyspark.sql.types import StringType, TimestampType
+from pyspark.sql import *
 from pyspark.sql.functions import *
+from pyspark.sql.types import *
 
 
 # Initialize Spark session

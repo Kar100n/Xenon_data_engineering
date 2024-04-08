@@ -18,6 +18,11 @@ Check Topic Desc:
 
 bin/kafka-topics.sh --describe --topic Xenontask --bootstrap-server localhost:9092
 
+Alter Topic: 
+
+bin/kafka-topics.sh --Alter --topic Xenontask --bootstrap-server localhost:9092
+
+
 Console Producer:
 bin/kafka-console-producer.sh --topic Xenontask --bootstrap-server localhost:9092
 

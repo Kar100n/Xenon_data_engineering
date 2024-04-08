@@ -1,8 +1,7 @@
 from pyspark.sql import SparkSession 
 import pyspark
 from delta import *
-
-from pyspark.sql.functions import explode, hour, avg 
+from pyspark.sql.functions import *
 
 builder = pyspark.sql.SparkSession.builder.appName("AvgSignalsPerHour") \
     .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \

@@ -1,10 +1,8 @@
-from pyspark.sql import SparkSession 
 import pyspark
 from delta import *
 from pyspark.sql import *
 from pyspark.sql.functions import *
-from pyspark.sql.types import StructType, StructField, StringType 
-from pyspark.sql.functions import explode, hour, avg, col 
+from pyspark.sql.types import *
 
 builder = pyspark.sql.SparkSession.builder.appName("JOINBROADCAST") \
     .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
@@ -46,8 +44,6 @@ data = [
 ] 
 
 mapping_df = spark.createDataFrame(data, schema) 
-
-from pyspark.sql.functions import broadcast 
 
 # Performing the broadcast join 
 

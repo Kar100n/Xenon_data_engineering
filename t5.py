@@ -1,9 +1,7 @@
-from pyspark.sql import SparkSession 
-from pyspark.sql.types import StructType, StructField, StringType 
-from pyspark.sql.functions import when, col
-import pyspark
+from pyspark.sql import *
+from pyspark.sql.types import *
+from pyspark.sql.functions import *
 from delta import *
-from pyspark.sql.functions import explode
 
 Spark = SparkSession.builder.appName("SignalMapping").getOrCreate()
  

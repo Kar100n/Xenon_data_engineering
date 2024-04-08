@@ -1,7 +1,6 @@
 import pyspark
 from delta import *
-from pyspark.sql.functions import col, date_trunc 
-from pyspark.sql.functions import countDistinct
+from pyspark.sql.functions import *
 
 builder = pyspark.sql.SparkSession.builder.appName("MyApp") \
     .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
