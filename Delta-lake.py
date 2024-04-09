@@ -2,7 +2,7 @@ import pyspark
 from delta import *
 from pyspark.sql.functions import *
 
-builder = pyspark.sql.SparkSession.builder.appName("MyApp") \
+builder = pyspark.sql.SparkSession.builder.appName("Distinct") \
     .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
     .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
 

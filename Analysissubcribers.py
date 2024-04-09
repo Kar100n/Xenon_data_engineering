@@ -8,7 +8,7 @@ schema = StructType([
     StructField("signal_ts", TimestampType()),
     StructField("create_date", DateType()),
     StructField("create_ts", TimestampType()),
-    StructField("signals", MapType(StringType(), StringType()))
+    StructField("signals", MapType(StringType(), StringType())) #remember the values are in stringtype while read from producer
 ])
 
 # Initializing Spark session for Subscriber

@@ -2,7 +2,7 @@ from pyspark.sql.functions import *
 import pyspark
 from delta import *
 
-builder = pyspark.sql.SparkSession.builder.appName("AvgSignalsPerHour") \
+builder = pyspark.sql.SparkSession.builder.appName("generation_indicator_column") \
     .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
     .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
 
@@ -16,7 +16,7 @@ exploded_df = df_table_delta.select(explode("signals").alias("signal_name", "sig
 
 ) 
 
-# Filtering ‘LV ActivePower (kW)’ rows and apply conditional logic 
+# Filtering ‘LV ActivePower (kW)’ rows and applying conditional logic using filter
 LV_ActivePower_df = exploded_df.filter(col("signal_name") == "LV_ActivePower")
 Generation_indicator_df = LV_ActivePower_df.withColumn("generation_indicator",
 
